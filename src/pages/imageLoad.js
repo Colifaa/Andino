@@ -1,37 +1,36 @@
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import axios from 'axios';
 
-export default function ImageLoad(props) {
-  
-  const inputRef = useRef();
+const url = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
 
-  useEffect(()=> {
-    var img = document.getElementById("image");
-    img.src = "/noImage.jpg";
-  },[])
- 
-  function setFiles(e) {
-    var fReader = new FileReader();
-    fReader.readAsDataURL(inputRef.current.files[0]);
-    fReader.onloadend = function (event) {
-      var img = document.getElementById("image");
-      img.src = event.target.result;
-    };
-  }
+async function uploadFile(file) {
+ const data = new FormData();
+ data.append('file', file);
 
-  return (
-    <div className=" h-40  ">
-      <input
-        type="file"
-        onChange={() => setFiles()}
-        ref={inputRef}
-      ></input>
-      <Image
-        
-        className="h-32 w-50"
-        alt="Picture of the author"
-        id="image"
-      />
-    </div>
-  );
+ const headers = {
+    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+    'pinata_api_key': '96bcb01cab23ce55c883',
+    'pinata_secret_api_key': '71501b126177b87aaa7b5bab28b725ac5c1ea8587595c19b986098482ac0d051',
+ };
+
+ try {
+    const response = await axios.post(url, data, { headers });
+    console.log('File uploaded successfully. CID:', response.data.IpfsHash);
+ } catch (error) {
+    console.error('Error uploading file:', error);
+ }
 }
+
+function ImageLoad() {
+ const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    await uploadFile(file);
+ };
+
+ return (
+    <div>
+      <input type="file" onChange={handleFileUpload} />
+    </div>
+ );
+}
+
+export default ImageLoad;
