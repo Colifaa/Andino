@@ -1,6 +1,7 @@
 import QRCode from "qrcode.react";
 import ImageLoad from "./imageLoad";
 
+
 import { useState } from "react";
 import Web3 from "web3";
 
@@ -710,16 +711,6 @@ const abi = [
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "createDate",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "startingDate",
 				"type": "uint256"
 			},
@@ -957,64 +948,85 @@ const abi = [
 ]; // ABI del contrato Poap
 
 // Dirección del contrato
-const address = '0xD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771B';
+const address = '0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47';
 
 
-export default function Home() {
+export default function CreatePoaps() {
   const [url, setUrl] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [eventNum, setEventNum] = useState("");
   const [eventDescription, setEventDescription] = useState("");
+
+  const [eventId, setEventId] = useState("");
+
+  const [imageUrl, setImageUrl] = useState('');
+ 
+
   
+
   async function createEvent(e) {
     e.preventDefault();
-    const currentDate = Date.now(); // Define currentDate aquí
-    
+  
+    // Obtén la fecha actual con zona horaria
+    const currentDate = new Date();
+    const currentDateInSeconds = Math.floor(currentDate.getTime() / 1000);
   
     if (typeof window.ethereum !== "undefined") {
       const web3 = new Web3(window.ethereum);
-      await window.ethereum.request({ method: 'eth_requestAccounts' }); // Use 'eth_requestAccounts'
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
   
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(abi, address);
   
-      
-      let date = (new Date()).getTime();
-      let startDate = date / 1000;
-      console.log("startDate", startDate);
-          const expirationDate = new Date(endDate).getTime()/1000;
-    
+      // Asegúrate de que las fechas se estén configurando correctamente
+      let startDateInSeconds = (new Date(startDate).getTime() / 1000).toString();
+      let expirationDateInSeconds = (new Date(endDate).getTime() / 1000).toString();
   
-      if (expirationDate > currentDate) {
+      console.log("startDate", startDateInSeconds);
+      console.log("expirationDate", expirationDateInSeconds);
+  
+      if (expirationDateInSeconds < startDateInSeconds) {
         console.error("La fecha de finalización debe ser en el futuro");
         return;
       }
-  
+
       try {
         const result = await contract.methods.createPoap(
           eventTitle,
-          currentDate,
-           startDate,
-          expirationDate,
-          eventDescription
+          currentDateInSeconds,
+          startDateInSeconds,
+          expirationDateInSeconds,
+          eventNum,
+          eventId // Agrega el nuevo campo del ID
         ).send({ from: accounts[0] });
   
         console.log("Evento creado:", result);
         // Aquí puedes actualizar el estado 'url' con la URL generada
+
+        const CID = result.cid;
+
+        const generatedUrl = `https://ipfs.io/ipfs/${CID}`; // ¡Asegúrate de ajustar la lógica para obtener la URL correcta!
+
+        console.log("Evento creado:", result);
+        setUrl(generatedUrl); // Establece la URL generada en el estado 'url'
         // setUrl(generatedUrl);
       } catch (error) {
         console.error("Error al crear el evento:", error);
       }
     } else {
       console.error("Web3 no está disponible en este navegador");
-    }
-  }
-  
-  
+}
+}
+
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+	<div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12"
+	style={{ backgroundImage: `url('https://i.ibb.co/HxcGFCN/R.jpg')`, backgroundSize: 'cover' }}>
+		  
+		  
+    
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
           <div className="max-w-md mx-auto">
@@ -1022,7 +1034,7 @@ export default function Home() {
               <div className="h-14 w-14 bg-yellow-200 rounded-full flex flex-shrink-0 justify-center items-center text-yellow-500 text-2xl font-mono">i</div>
               <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
                 <h2 className="leading-relaxed">Create an Event</h2>
-                <p className="text-sm text-gray-500 font-normal leading-relaxed">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                <p className="text-sm text-gray-500 font-normal leading-relaxed">"POAP Odyssey: Donde las Ideas se Transforman en Asombrosos Poaps NFT"</p>
               </div>
             </div>
             <form onSubmit={createEvent}>
@@ -1069,18 +1081,35 @@ export default function Home() {
 </div>
 
                 <div className="flex flex-col">
-                  <label className="leading-loose">Event Description</label>
+                  <label className="leading-loose">Quantity of Poaps</label>
                   <input
                     type="text"
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                    placeholder="Optional"
-                    value={eventDescription}
-                    onChange={(e) => setEventDescription(e.target.value)}
+                    placeholder="Cantidad de Poaps"
+                   
+                    value={eventNum}
+                    onChange={(e) => setEventNum(e.target.value)}
                   />
                 </div>
+                
+              <div className="flex flex-col">
+  <label className="leading-loose">Event Description</label>
+  <textarea
+  
+    className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+    placeholder="Descripción del evento"
+    value={eventDescription}
+    onChange={(e) => setEventDescription(e.target.value)}
+  />
+</div>
               </div>
+        
 
-              <ImageLoad></ImageLoad>
+          <ImageLoad />
+
+           
+
+            
               <div className="pt-4 flex items-center space-x-4">
                 <button
                   className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
@@ -1088,25 +1117,17 @@ export default function Home() {
                 >
                   Create
                 </button>
+
+             
               </div>
-              {/* Código para mostrar el QR */}
-              <div className="mt-8">
-                {url && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">URL del evento:</h3>
-                    <p>{url}</p>
-                    <div className="mt-4">
-                      {/* Aquí el componente QRCode */}
-                      {/* <QRCode value={url} size={200} /> */}
-                    </div>
-                  </div>
-                )}
-              </div>
+    
+              
             </form>
           </div>
         </div>
       </div>
     </div>
+	
   );
   
 }
