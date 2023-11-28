@@ -7,4 +7,5 @@ export default function poap() {
       <Poap/>
     </div>
   )
+  
 }
