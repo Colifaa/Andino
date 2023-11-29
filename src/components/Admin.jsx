@@ -1021,9 +1021,11 @@ export default function Admin() {
 }
 
 
+
+
   return (
-	<div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12"
-	style={{ backgroundImage: `url('https://i.ibb.co/HxcGFCN/R.jpg')`, backgroundSize: 'cover' }}>
+	<div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 " 
+>
 		  
 		  
     

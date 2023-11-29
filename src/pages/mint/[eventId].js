@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Loading from '@/components/Loading';
-
+import Cards from '@/components/Cards';
 
 export default function Mint() {
 
@@ -49,7 +49,7 @@ export default function Mint() {
     }
 
     return (
-        <div>
+        <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 " >
             {
                 loading ?
 
@@ -89,8 +89,9 @@ export default function Mint() {
 
             }
 
-
+<Cards/>
         </div>
-    )
+      
+            )
     
 }
