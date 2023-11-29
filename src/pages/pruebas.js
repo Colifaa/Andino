@@ -7,7 +7,7 @@ const Pruebas = () => (
   <div>
 <NavBar/>
 
-    <div className="bg-gradient-to-br from-indigo-900 to-green-900 min-h-screen overflow-auto">
+    <div className="bg-gradient-to-br from-indigo-600 to-green-600 min-h-screen overflow-auto">
       <div className="container max-w-5xl mx-auto px-4">
         <div className="w-4/5">
           <h1 className="mt-32 text-white text-6xl font-bold">
