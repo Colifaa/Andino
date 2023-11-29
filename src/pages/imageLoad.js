@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import QRCode from 'qrcode.react';
+require('dotenv').config();
 
 const uploadUrl = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
 
@@ -14,8 +15,8 @@ const ImageLoad = () => {
 
     const headers = {
       'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-      'pinata_api_key': 'fe3898969c15e7f996c5',
-      'pinata_secret_api_key': '719d3ad6d2ec8efbe51c73cb26df781f13b6b2bd088c881ea6039d01174f6a39'
+      'pinata_api_key': process.env.NEXT_PUBLIC_PINATA_API_KEY,
+      'pinata_secret_api_key': process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY
     };
 
     try {
