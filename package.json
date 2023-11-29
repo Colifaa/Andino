@@ -11,6 +11,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
     "next": "13.5.6",
     "postcss": "^8.4.31",
     "qrcode.react": "^3.1.0",
