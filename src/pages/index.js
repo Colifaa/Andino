@@ -11,7 +11,7 @@ const Home = () => (
   <div className="container max-w-5xl mx-auto px-4">
     <div className="w-4/5">
       <h1 className="mt-32 text-white text-6xl font-bold">
-      La forma más rápida y segura de crear tus POAPs <br />
+      La forma más rápida y segura de crear  POAPs <br />
         <span className="text-blue-400">para tus eventos.</span>
       </h1>
     </div>
