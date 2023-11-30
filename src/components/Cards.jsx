@@ -43,9 +43,10 @@ const CardsContainer = () => {
     
       <div className="container max-w-5xl mx-auto px-4">
         <div className="w-4/5">
-          <h1 className="mt-32 text-white text-6xl font-bold">
-            La forma más rápida y segura de crear POAPs <br />
-            <span className="text-blue-400">para tus eventos.</span>
+          <h1 className="mt-32 text-black text-6xl font-bold">
+          ¿QUIÉN UTILIZA POAP?<br />
+            <span className="text-green-300">
+Organizaciones grandes y pequeñas utilizan POAP para conectarse con sus comunidades y celebrar a sus fans.</span>
           </h1>
         </div>
         <div className="w-5/6 my-10 ml-6">
