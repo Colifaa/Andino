@@ -28,6 +28,7 @@ const Home = () => (
       {/* Puedes agregar más contenido relacionado con la creación de POAPs aquí */}
     </div>
   </div>
+  
         <CardPoaps/>
       </div>
       <Footer/>
