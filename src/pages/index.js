@@ -1,43 +1,38 @@
-import React from 'react'
+import CardPoaps from '@/components/CardPoaps';
+import Cards from '@/components/Cards';
+import Footer from '@/components/Footer';
+import NavBar from '@/components/NavBar';
+import Head from 'next/head';
 
-	import { useState } from 'react';
-	import Image from 'next/image';
-	
-	const Home = () => {
-	 const [buttonText, setButtonText] = useState('Drop me');
-	
-	 const handleDrop = () => {
-		setButtonText('Claimed');
-	 };
-	
-	 return (
-		<div className="bg-gray-100 min-h-screen">
-		  <div className="relative flex items-center justify-center min-h-screen">
-			<div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center p-8">
-			  <h1 className="text-6xl font-bold text-center text-white">
-				Drop to Win POAPs
-			  </h1>
-			</div>
-			<div className="relative z-20 p-8">
-			  <div className="relative w-64 h-64">
-				<Image
-				  src="/drop.png"
-				  alt="Drop to win POAPs"
-				  layout="fill"
-				  objectFit="contain"
-				/>
-			  </div>
-			  <button
-				className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-				onClick={handleDrop}
-			  >
-				{buttonText}
-			  </button>
-			</div>
-		  </div>
-		</div>
-	 );
-	};
-	
-	export default Home;
+const Home = () => (
+  <div>
+<NavBar/>
+<div className="bg-gradient-to-br from-indigo-600 to-green-600 min-h-screen overflow-auto">
+  <div className="container max-w-5xl mx-auto px-4">
+    <div className="w-4/5">
+      <h1 className="mt-32 text-white text-6xl font-bold">
+      La forma más rápida y segura de crear tus POAPs <br />
+        <span className="text-blue-400">para tus eventos.</span>
+      </h1>
+    </div>
+    <div className="w-5/6 my-10 ml-6">
+      <h3 className="text-gray-300">
+        Diseña, edita y distribuye POAPs únicos para <br />
+        <strong className="text-white">cualquier tipo de evento</strong>
+        <br />con instalaciones de paquetes rápidas y seguridad garantizada.
+      </h3>
+    </div>
+    <div className="hidden sm:block opacity-50 z-0"></div>
+    <div className="text-white relative">
+      <h3 className="uppercase font-semibold">Eventos y Ocasiones</h3>
+      {/* Puedes agregar más contenido relacionado con la creación de POAPs aquí */}
+    </div>
+  </div>
+        <CardPoaps/>
+      </div>
+      <Footer/>
 
+  </div>
+);
+
+export default Home;
