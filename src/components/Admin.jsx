@@ -4,6 +4,7 @@ import ImageLoad from "../pages/imageLoad";
 
 import { useState } from "react";
 import Web3 from "web3";
+import Cards from "./Cards";
 
 
 
@@ -1024,10 +1025,31 @@ export default function Admin() {
 
 
   return (
-	<div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 " 
->
+	
+
+	<div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12">
 		  
-		  
+		
+  <div className="container max-w-5xl mx-auto px-4">
+    <div className="w-4/5">
+      <h1 className="mt-32 text-white text-6xl font-bold">
+      La forma más rápida y segura de crear  POAPs <br />
+        <span className="text-blue-400">para tus eventos.</span>
+      </h1>
+    </div>
+    <div className="w-5/6 my-10 ml-6">
+      <h3 className="text-gray-300">
+        Diseña, edita y distribuye POAPs únicos para <br />
+        <strong className="text-white">cualquier tipo de evento</strong>
+        <br />con instalaciones de paquetes rápidas y seguridad garantizada.
+      </h3>
+    </div>
+    <div className="hidden sm:block opacity-50 z-0"></div>
+    <div className="text-white relative">
+      <h3 className="uppercase font-semibold">Eventos y Ocasiones</h3>
+      {/* Puedes agregar más contenido relacionado con la creación de POAPs aquí */}
+    </div>
+  </div>
     
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
@@ -1123,12 +1145,14 @@ export default function Admin() {
              
               </div>
     
-              
             </form>
           </div>
         </div>
       </div>
+	  
+	  <Cards/>
     </div>
+	
 	
   );
   
