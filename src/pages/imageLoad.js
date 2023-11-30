@@ -22,7 +22,7 @@ const ImageLoad = () => {
     try {
       const response = await axios.post(uploadUrl, data, { headers });
       const newCid = response.data.IpfsHash;
-      const ipfsGateway = 'https://ipfs.io/ipfs/';
+      const ipfsGateway = 'https://gateway.pinata.cloud/ipfs/';
       const newImageUrl = ipfsGateway + newCid;
 
       console.log('File uploaded successfully. CID:', newCid);
