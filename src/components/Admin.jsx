@@ -1,6 +1,6 @@
 import QRCode from "qrcode.react";
 import ImageLoad from "../pages/imageLoad";
-
+import axios from 'axios';
 
 import { useState } from "react";
 import Web3 from "web3";
@@ -953,76 +953,108 @@ const address = '0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47';
 
 
 export default function Admin() {
-  const [url, setUrl] = useState("");
-  const [eventTitle, setEventTitle] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [eventNum, setEventNum] = useState("");
-  const [eventDescription, setEventDescription] = useState("");
-
-  const [eventId, setEventId] = useState("");
-
-  const [imageUrl, setImageUrl] = useState('');
- 
-
+	const [url, setUrl] = useState('');
+	const [eventTitle, setEventTitle] = useState('');
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
+	const [eventNum, setEventNum] = useState('');
+	const [eventDescription, setEventDescription] = useState('');
   
-
-  async function createEvent(e) {
-    e.preventDefault();
+	const [eventId, setEventId] = useState('');
+	const [imageUrl, setImageUrl] = useState('');
+	const [imageFile, setImageFile] = useState(null);
   
-    // Obtén la fecha actual con zona horaria
-    const currentDate = new Date();
-    const currentDateInSeconds = Math.floor(currentDate.getTime() / 1000);
+	const uploadFile = async (file) => {
+	  const data = new FormData();
+	  data.append('file', file);
   
-    if (typeof window.ethereum !== "undefined") {
-      const web3 = new Web3(window.ethereum);
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
+	  const uploadUrl = 'https://api.pinata.cloud/pinning/pinFileToIPFS'; // Reemplaza con tu URL de carga a Pinata
   
-      const accounts = await web3.eth.getAccounts();
-      const contract = new web3.eth.Contract(abi, address);
+	  const headers = {
+		'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+		'pinata_api_key': process.env.NEXT_PUBLIC_PINATA_API_KEY,
+		'pinata_secret_api_key': process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY,
+	  };
   
-      // Asegúrate de que las fechas se estén configurando correctamente
-      let startDateInSeconds = (new Date(startDate).getTime() / 1000).toString();
-      let expirationDateInSeconds = (new Date(endDate).getTime() / 1000).toString();
+	  try {
+		const response = await axios.post(uploadUrl, data, { headers });
+		const newCid = response.data.IpfsHash;
+		const ipfsGateway = 'https://ipfs.io/ipfs/';
+		const newImageUrl = ipfsGateway + newCid;
   
-      console.log("startDate", startDateInSeconds);
-      console.log("expirationDate", expirationDateInSeconds);
+		console.log('File uploaded successfully. CID:', newCid);
+		console.log('IPFS URL:', newImageUrl);
   
-      if (expirationDateInSeconds < startDateInSeconds) {
-        console.error("La fecha de finalización debe ser en el futuro");
-        return;
-      }
-
-      try {
-        const result = await contract.methods.createPoap(
-          eventTitle,
-          currentDateInSeconds,
-          startDateInSeconds,
-          expirationDateInSeconds,
-          eventNum,
-          eventId // Agrega el nuevo campo del ID
-        ).send({ from: accounts[0] });
+		setImageUrl(newImageUrl);
   
-        console.log("Evento creado:", result);
-        // Aquí puedes actualizar el estado 'url' con la URL generada
-
-        const CID = result.cid;
-
-        const generatedUrl = `https://ipfs.io/ipfs/${CID}`; // ¡Asegúrate de ajustar la lógica para obtener la URL correcta!
-
-        console.log("Evento creado:", result);
-        setUrl(generatedUrl); // Establece la URL generada en el estado 'url'
-        // setUrl(generatedUrl);
-      } catch (error) {
-        console.error("Error al crear el evento:", error);
-      }
-    } else {
-      console.error("Web3 no está disponible en este navegador");
-}
-}
-
-
-
+		return { cid: newCid, url: newImageUrl };
+	  } catch (error) {
+		console.error('Error uploading file:', error);
+		return { error };
+	  }
+	};
+  
+	const handleFileUpload = async (e) => {
+	  const file = e.target.files[0];
+	  setImageFile(file);
+	};
+  
+	const createEvent = async (e) => {
+	  e.preventDefault();
+  
+	  const currentDate = new Date();
+	  const currentDateInSeconds = Math.floor(currentDate.getTime() / 1000);
+  
+	  if (!imageFile) {
+		console.error('Debes subir una imagen antes de crear el evento.');
+		return;
+	  }
+  
+	  try {
+		const { url: imageUrl } = await uploadFile(imageFile);
+  
+		if (typeof window.ethereum !== 'undefined') {
+		  const web3 = new Web3(window.ethereum);
+		  await window.ethereum.request({ method: 'eth_requestAccounts' });
+  
+		  const accounts = await web3.eth.getAccounts();
+		  const contract = new web3.eth.Contract(abi, '0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47'); // Reemplaza con tu dirección de contrato
+  
+		  let startDateInSeconds = (new Date(startDate).getTime() / 1000).toString();
+		  let expirationDateInSeconds = (new Date(endDate).getTime() / 1000).toString();
+  
+		  if (expirationDateInSeconds < startDateInSeconds) {
+			console.error('La fecha de finalización debe ser en el futuro');
+			return;
+		  }
+  
+		  console.log('Antes de llamar a createPoap, imageUrl es:', imageUrl);
+		  
+		  const result = await contract.methods.createPoap(
+			eventTitle,
+			currentDateInSeconds,
+			startDateInSeconds,
+			expirationDateInSeconds,
+			eventNum,
+			eventId,
+			imageUrl
+		  ).send({ from: accounts[0] });
+  
+		  console.log('Evento creado:', result);
+  
+		  const CID = result.cid;
+		  const generatedUrl = `https://ipfs.io/ipfs/${CID}`;
+  
+		  console.log('URL del evento:', generatedUrl);
+		  setUrl(generatedUrl);
+		} else {
+		  console.error('Web3 no está disponible en este navegador');
+		}
+	  } catch (error) {
+		console.error('Error al crear el evento:', error);
+	  }
+	};
+  
 
   return (
 	
@@ -1126,6 +1158,15 @@ export default function Admin() {
     onChange={(e) => setEventDescription(e.target.value)}
   />
 </div>
+
+<div className="flex flex-col">
+    <label className="leading-loose">Upload Image</label>
+    <input
+      type="file"
+      accept="image/*"
+	  onChange={handleFileUpload}
+    />
+  </div>
               </div>
         
 
