@@ -93,7 +93,54 @@ export default function Admin() {
 		  }
   
 		  console.log('Antes de llamar a createPoap, imageUrl es:', imageUrl);
+
+
+
+		  const metadata = {
+			name: eventTitle,
+			description: eventDescription,
+			image: imageUrl,
+			attributes: [
+			  {
+				trait_type: 'Fecha de inicio',
+				value: startDate,
+			  },
+			  {
+				trait_type: 'Fecha de finalización',
+				value: endDate,
+			  },
+			  {
+				trait_type: 'Número del evento',
+				value: eventNum,
+			  },
+			
+			],
+		  };
 		  
+
+
+		  const uploadMetadata = async () => {
+			try {
+			  const { url: metadataUrl } = await uploadFile(new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+			  console.log('Metadata uploaded successfully. URL:', metadataUrl);
+			  return metadataUrl;
+			} catch (error) {
+			  console.error('Error uploading metadata:', error);
+			  return { error };
+			}
+		  };
+		  
+
+
+
+ 
+
+		  const metadataJSON = JSON.stringify(metadata);
+
+
+
+		  const metadataUrl = await uploadMetadata();
+
 		  const result = await contract.methods.createPoap(
 			eventTitle,
 			currentDateInSeconds,
@@ -101,7 +148,8 @@ export default function Admin() {
 			expirationDateInSeconds,
 			eventNum,
 			eventId,
-			imageUrl
+			imageUrl,
+			metadataUrl // Agrega la URL de la metadata aquí
 		  ).send({ from: accounts[0] });
   
 		  console.log('Evento creado:', result);
