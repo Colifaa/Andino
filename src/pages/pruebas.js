@@ -1,5 +1,6 @@
 import CardPoaps from '@/components/CardPoaps';
 import Cards from '@/components/Cards';
+import DepositButton from '@/components/DepositButton';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import Head from 'next/head';
@@ -31,7 +32,7 @@ const Pruebas = () => (
         <CardPoaps/>
       </div>
       <Footer/>
-
+<DepositButton/>
   </div>
 );
 
