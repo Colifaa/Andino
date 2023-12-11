@@ -21,6 +21,8 @@ const CardsUser = () => {
     console.log("poapData",poapData);
     console.log("poapIds",poapIds);
 
+
+    
     const fetchPoapData = async () => {
         const web3 = new Web3(window.ethereum);
       
@@ -115,23 +117,33 @@ const CardsUser = () => {
       </div>
       <div className="flex flex-wrap justify-center mx-auto">
       {Object.keys(jsonData).map((id) => {
-    const card = jsonData[id];
-    return (
-      <div key={id} className="w-full sm:w-1/5 md:w-1/2 lg:w-1/2 xl:w-1/2 p-4" onClick={() => openCardDrawer(card)}>
-         <div className=" bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 p-10 rounded-md shadow-md">
-         <Flex align="center" justify="center">
-      <Image src={card.imageUrl} alt={card.title}  objectFit="cover" rounded="full" />
+        const card = jsonData[id];
+        return (
+          <div key={id} className="w-full sm:w-1/5 md:w-1/2 lg:w-1/2 xl:w-1/2 p-4" onClick={() => openCardDrawer(card)}>
+            <div className="bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 p-10 rounded-md shadow-md">
+           
+            <Flex align="center" justify="center">
+
+      <Image src={card.image}  objectFit="cover" rounded="full"   borderRadius='full'
+  boxSize='220px'
+/>
     </Flex>
-    <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.title}</h3>
-    <p className="text-xl font-bold text-red-500">{card.eventDescription}</p>
-    <p className="text-xl font-bold text-black">Fecha de inicio: {card.startDate}</p>
-    <p className="text-xl font-bold text-black">Fecha de finalización: {card.endDate}</p>
-    <p className="text-xl font-bold text-black">Número del evento: {card.eventNum}</p>
+              <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.name}</h3>
+           
+              
+            
+             
+            
+              {card.attributes.map((attribute, index) => (
+                <p key={index} className="text-xl font-bold text-black">
+                  {attribute.trait_type}: {attribute.value}
+                </p>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
-      </div>
-    );
-  })}
-</div>
       {/* Chakra UI Drawer */}
       <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer} size="md"  >
         <DrawerOverlay>
@@ -139,14 +151,12 @@ const CardsUser = () => {
             <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange" >Card Details</DrawerHeader>
             <DrawerBody mt="10" size="md"   borderRadius="50px"> 
             <Flex align="center" justify="center" >
-      <Image src={selectedCard?.imageUrl} alt={selectedCard?.title}   objectFit="cover" rounded="full" />
+      <Image src={selectedCard?.image} alt={selectedCard?.title}   objectFit="cover" rounded="full"   borderRadius='full'
+  boxSize='220px' />
     </Flex>
-            <p className="text-4xl font-bold mb-2 text-red-800 font-serif">{selectedCard?.eventDescription}</p>
-            <p className="text-xl font-bold text-black">{selectedCard?.startDate}</p>
-            <p className="text-xl font-bold text-black">{selectedCard?.endDate}</p>
-            <p className="text-xl font-bold text-black">{selectedCard?.eventNum}</p>
-              <h3 className="text-xl font-bold text-black">{selectedCard?.name}</h3>
-              <p className="text-xl font-bold text-black">{selectedCard?.description}</p>
+           
+              <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.name}</h3>
+              <p className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.description}</p>
              
               {/* Otras partes del contenido del Drawer */}
               <Button mt={4} onClick={closeDrawer}>
