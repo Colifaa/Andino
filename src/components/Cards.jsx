@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay } from '@chakra-ui/react';
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay,Flex,Image } from '@chakra-ui/react';
 import Web3 from "web3";
 import _ from 'lodash';
 
@@ -109,35 +109,43 @@ const CardsContainer = () => {
     setSelectedCard(null);
     setIsDrawerOpen(false);
   };
+  const renderCardContent = (card) => (
+    <>
+   <Flex align="center" justify="center">
+      <Image src={card.imageUrl} alt={card.title}  objectFit="cover" rounded="full" />
+    </Flex>
+    <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.title}</h3>
+    <p className="text-xl font-bold text-red-500">{card.eventDescription}</p>
+    <p className="text-xl font-bold text-black">Fecha de inicio: {card.startDate}</p>
+    <p className="text-xl font-bold text-black">Fecha de finalización: {card.endDate}</p>
+    <p className="text-xl font-bold text-black">Número del evento: {card.eventNum}</p>
+  </>
+);
 
   return (
     <div className="container max-w-5xl mx-auto px-4">
-      {/* Resto del código */}
+      {/* Mapa para mostrar tarjetas */}
       <div className="flex flex-wrap justify-center mx-auto">
-      {Object.keys(jsonData).map((id) => {
-    const card = jsonData[id];
-    return (
-      <div key={id} className="w-full sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2 p-4" onClick={() => openCardDrawer(card)}>
-        <div className="bg-white p-6 rounded-md shadow-md">
-          <img src={card.imageUrl} alt={card.title} className="w-full h-60 object-cover mb-4 rounded" />
-          <h3 className="text-xl font-bold mb-2">{card.title}</h3>
-          <p className="text-gray-700">Descripción: {card.eventDescription}</p>
-          <p className="text-gray-700">Fecha de inicio: {card.startDate}</p>
-          <p className="text-gray-700">Fecha de finalización: {card.endDate}</p>
-          <p className="text-gray-700">Número del evento: {card.eventNum}</p>
-        </div>
+        {Object.keys(jsonData).map((id) => {
+          const card = jsonData[id];
+          return (
+            <div key={id} className="w-full sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2 p-4" onClick={() => openCardDrawer(card)}>
+              <div className=" bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 p-10 rounded-md shadow-md">
+                {renderCardContent(card)}
+              </div>
+            </div>
+          );
+        })}
       </div>
-    );
-  })}
-</div>
+
       {/* Chakra UI Drawer */}
-      <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer}>
+      <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer} size="md" >
         <DrawerOverlay>
-          <DrawerContent>
-            <DrawerHeader borderBottomWidth="1px">Card Details</DrawerHeader>
-            <DrawerBody>
-              <h3 className="text-xl font-bold mb-2">{selectedCard?.name}</h3>
-              <p className="text-gray-700">{selectedCard?.description}</p>
+          <DrawerContent  bgSize="cover" bgRepeat="no-repeat" bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4=">
+            <DrawerHeader borderBottomWidth="1px" >Card Details</DrawerHeader>
+            <DrawerBody mt="10" size="md" color="blue"  borderRadius="50px"> 
+              {/* Contenido del Drawer */}
+              {selectedCard && renderCardContent(selectedCard)}
               {/* Otras partes del contenido del Drawer */}
               <Button mt={4} onClick={closeDrawer}>
                 Cerrar
