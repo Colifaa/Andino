@@ -111,16 +111,20 @@ const CardsContainer = () => {
   };
   const renderCardContent = (card) => (
     <>
-   <Flex align="center" justify="center">
-      <Image src={card.imageUrl} alt={card.title}  objectFit="cover" rounded="full" />
-    </Flex>
-    <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.title}</h3>
-    <p className="text-xl font-bold text-red-500">{card.eventDescription}</p>
-    <p className="text-xl font-bold text-black">Fecha de inicio: {card.startDate}</p>
-    <p className="text-xl font-bold text-black">Fecha de finalización: {card.endDate}</p>
-    <p className="text-xl font-bold text-black">Número del evento: {card.eventNum}</p>
-  </>
-);
+      <Flex align="center" justify="center">
+        <Image src={card.image} alt={card.title} objectFit="cover" rounded="full"   borderRadius='full'
+  boxSize='220px' />
+      </Flex>
+      <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.title}</h3>
+      <p className="text-xl font-bold text-red-500">{card.description}</p>
+      {/* Ajustar el código para mostrar datos de eventos POAP */}
+      {card.attributes && card.attributes.map((attribute, index) => (
+        <p key={index} className="text-xl font-bold text-black">
+          {attribute.trait_type}: {attribute.value}
+        </p>
+      ))}
+    </>
+  );
 
   return (
     <div className="container max-w-5xl mx-auto px-4">
@@ -141,12 +145,12 @@ const CardsContainer = () => {
       {/* Chakra UI Drawer */}
       <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer} size="md" >
         <DrawerOverlay>
-          <DrawerContent  bgSize="cover" bgRepeat="no-repeat" bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4=">
-            <DrawerHeader borderBottomWidth="1px" >Card Details</DrawerHeader>
-            <DrawerBody mt="10" size="md" color="blue"  borderRadius="50px"> 
-              {/* Contenido del Drawer */}
+          <DrawerContent bgSize="cover" bgRepeat="no-repeat" bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4=">
+          <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange" >My Poap</DrawerHeader>
+            <DrawerBody mt="10" size="md" color="blue" borderRadius="50px">
+             
               {selectedCard && renderCardContent(selectedCard)}
-              {/* Otras partes del contenido del Drawer */}
+            
               <Button mt={4} onClick={closeDrawer}>
                 Cerrar
               </Button>
@@ -157,5 +161,4 @@ const CardsContainer = () => {
     </div>
   );
 };
-
 export default CardsContainer;
