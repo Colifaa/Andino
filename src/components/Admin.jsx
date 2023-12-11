@@ -22,7 +22,7 @@ const address = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
 export default function Admin() {
   const [url, setUrl] = useState('');
-  const [eventTitle, setEventTitle] = useState('');
+  const [eventName, seteventName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [eventNum, setEventNum] = useState('');
@@ -87,7 +87,7 @@ export default function Admin() {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
 
         const accounts = await web3.eth.getAccounts();
-        const contract = new web3.eth.Contract(abi, '0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47'); // Reemplaza con tu dirección de contrato
+        const contract = new web3.eth.Contract(abi, address); // Reemplaza con tu dirección de contrato
 
         let startDateInSeconds = (new Date(startDate).getTime() / 1000).toString();
         let expirationDateInSeconds = (new Date(endDate).getTime() / 1000).toString();
@@ -102,7 +102,7 @@ export default function Admin() {
 
 
         const metadata = {
-          name: eventTitle,
+          name: eventName,
           description: eventDescription,
           image: imageUrl,
           attributes: [
@@ -115,7 +115,7 @@ export default function Admin() {
               value: endDate,
             },
             {
-              trait_type: 'Número del evento',
+              trait_type: 'Poaps Creados',
               value: eventNum,
             },
 
@@ -148,7 +148,7 @@ export default function Admin() {
     
 
         const result = await contract.methods.createPoap(
-          eventTitle,
+          eventName,
           currentDateInSeconds,
           startDateInSeconds,
           expirationDateInSeconds,
@@ -219,8 +219,8 @@ export default function Admin() {
                     type="text"
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     placeholder="Event title"
-                    value={eventTitle}
-                    onChange={(e) => setEventTitle(e.target.value)}
+                    value={eventName}
+                    onChange={(e) => seteventName(e.target.value)}
                   />
                 </div>
                 <div className="flex items-center space-x-4">
