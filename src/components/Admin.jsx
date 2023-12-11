@@ -6,6 +6,7 @@ import DepositButton from "./DepositButton";
 import { useState } from "react";
 import Web3 from "web3";
 import Cards from "./Cards";
+import CardsUser from "./CardsUser";
 
 
 
@@ -310,7 +311,7 @@ export default function Admin() {
 
       <DepositButton></DepositButton>
 
-      <Cards />
+      <CardsUser />
     </div>
 
 
