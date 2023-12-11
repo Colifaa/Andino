@@ -18,7 +18,7 @@ export default function DepositButton(params) {
 
 
         const amountToSend = web3.utils.toWei(amount, 'ether');
-        const recipientAddress = "0x873bEF9d900384E83c32Be16C4f227C204440BE3";
+        const recipientAddress = "0xE3bDbf08AA555cc12770A5220d1769b337061CD6";
 
 
         try {
@@ -44,6 +44,7 @@ export default function DepositButton(params) {
     return (
 
         <div className="flex w-screen justify-center items-center">
+        <p>{typeof process.env.NEXT_PUBLIC_RELAYER_ADDRESS}</p>
             <div className="flex justify-center  border w-2/6 p-10 rounded gap-8 border-orange-400 bg-white bg-opacity-90 ">
                 <form className="flex flex-col w-80 gap-10 justify-center" onSubmit={handleDeposit}>
                     <div className="flex justify-center gap-5">
