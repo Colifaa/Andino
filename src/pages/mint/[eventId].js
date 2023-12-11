@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Loading from '@/components/Loading';
 import Cards from '@/components/Cards';
 
+
 export default function Mint() {
 
     const router = useRouter();
