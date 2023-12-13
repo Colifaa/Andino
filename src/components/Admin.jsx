@@ -88,9 +88,9 @@ export default function Admin() {
 
         const accounts = await web3.eth.getAccounts();
         const contract = new web3.eth.Contract(abi, address); // Reemplaza con tu dirección de contrato
-
-        let startDateInSeconds = (new Date(startDate).getTime() / 1000).toString();
-        let expirationDateInSeconds = (new Date(endDate).getTime() / 1000).toString();
+        
+        const startDateInSeconds = Math.floor(new Date(startDate).getTime() / 1000);
+        const expirationDateInSeconds = Math.floor(new Date(endDate).getTime() / 1000);
 
         if (expirationDateInSeconds < startDateInSeconds) {
           console.error('La fecha de finalización debe ser en el futuro');
@@ -149,12 +149,10 @@ export default function Admin() {
 
         const result = await contract.methods.createPoap(
           eventName,
-          currentDateInSeconds,
           startDateInSeconds,
-          expirationDateInSeconds,
+          expirationDateInSeconds, 
+          eventDescription,
           eventNum,
-          eventId,
-          imageUrl,
           metadataUrl // Agrega la URL de la metadata aquí
         ).send({ from: accounts[0] });
 
