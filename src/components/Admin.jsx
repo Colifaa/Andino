@@ -31,6 +31,7 @@ export default function Admin() {
   const [eventId, setEventId] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [eventCreated, setEventCreated] = useState(false);
 
 
   const uploadFile = async (file) => {
@@ -100,6 +101,8 @@ export default function Admin() {
         console.log('Antes de llamar a createPoap, imageUrl es:', imageUrl);
 
 
+        
+
 
         const metadata = {
           name: eventName,
@@ -163,6 +166,8 @@ export default function Admin() {
 
         console.log('URL del evento:', generatedUrl);
         setUrl(generatedUrl);
+        setEventCreated(true); // Indicar que se ha creado un evento
+
       } else {
         console.error('Web3 no está disponible en este navegador');
       }
@@ -286,7 +291,7 @@ export default function Admin() {
               </div>
 
 
-              <ImageLoad />
+              {eventCreated && <ImageLoad />} {/* Renderizar ImageLoad solo si se ha creado un evento */}
 
 
 
