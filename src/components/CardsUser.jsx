@@ -9,11 +9,13 @@ import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay,
 const CardsUser = () => {
 
     const [selectedCard, setSelectedCard] = useState(null);
+   
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [userAddress, setUserAddress] = useState(null);
     
     const [poapIds, setPoapIds] = useState([]);
     const [poapData, setPoapData] = useState([]); // Agregamos el estado para almacenar los datos de POAP
+
 
     console.log("poapData",poapData);
     const [jsonData, setJsonData] = useState([]);
@@ -87,6 +89,7 @@ const CardsUser = () => {
 
 
   const openCardDrawer = (card) => {
+    console.log('Contenido de selectedCard:', card);
     setSelectedCard(card);
     setIsDrawerOpen(true);
   };
@@ -118,54 +121,60 @@ const CardsUser = () => {
       <div className="flex flex-wrap justify-center mx-auto">
       {Object.keys(jsonData).map((id) => {
         const card = jsonData[id];
+        const mintUrl = `https://andino.vercel.app/mint/${id}`;
         return (
           <div key={id} className="w-full sm:w-1/12 md:w-1/2 lg:w-1/2 xl:w-1/2 p-4" onClick={() => openCardDrawer(card)}>
             <div className="bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12 p-10 rounded-md shadow-md">
-           
-            <Flex align="center" justify="center">
-
-      <Image src={card.image}  objectFit="cover" rounded="full"   borderRadius='full'
-  boxSize='220px'
-/>
-    </Flex>
+              <Flex align="center" justify="center">
+                <Image src={card.image} objectFit="cover" rounded="full" borderRadius='full' boxSize='220px' />
+              </Flex>
               <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.name}</h3>
-           
-              
-            
-             
-            
               {card.attributes.map((attribute, index) => (
                 <p key={index} className="text-xl font-bold text-black">
                   {attribute.trait_type}: {attribute.value}
                 </p>
               ))}
+              {/* Agrega el enlace al botón para abrir el detalle */}
+              <a href={mintUrl} target="_blank" rel="noopener noreferrer" className="text-blue-900 font-bold hover:underline cursor-pointer">
+                Link de minteo
+              </a>
             </div>
           </div>
         );
       })}
     </div>
       {/* Chakra UI Drawer */}
-      <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer} size="md"  >
-        <DrawerOverlay>
-        <DrawerContent  bgSize="cover" bgRepeat="no-repeat" bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4=">
-            <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange" >Card Details</DrawerHeader>
-            <DrawerBody mt="10" size="md"   borderRadius="50px"> 
-            <Flex align="center" justify="center" >
-      <Image src={selectedCard?.image} alt={selectedCard?.title}   objectFit="cover" rounded="full"   borderRadius='full'
-  boxSize='220px' />
-    </Flex>
-           
-              <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.name}</h3>
-              <p className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.description}</p>
-             
-              {/* Otras partes del contenido del Drawer */}
-              <Button mt={4} onClick={closeDrawer}>
-                Cerrar
-              </Button>
-            </DrawerBody>
-          </DrawerContent>
-        </DrawerOverlay>
-      </Drawer>
+      <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer} size="md">
+  <DrawerOverlay>
+    <DrawerContent
+      bgSize="cover"
+      bgRepeat="no-repeat"
+      bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4="
+    >
+      <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange">
+        Detalles de la tarjeta
+      </DrawerHeader>
+      <DrawerBody mt="10" size="md" borderRadius="50px">
+        <Flex align="center" justify="center">
+          <Image
+            src={selectedCard?.image}
+            alt={selectedCard?.title}
+            objectFit="cover"
+            rounded="full"
+            borderRadius="full"
+            boxSize="220px"
+          />
+        </Flex>
+        <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.name}</h3>
+        <p className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.description}</p>
+
+        <Button mt={4} onClick={closeDrawer}>
+          Cerrar
+        </Button>
+      </DrawerBody>
+    </DrawerContent>
+  </DrawerOverlay>
+</Drawer>
     </div>
   );
 };
