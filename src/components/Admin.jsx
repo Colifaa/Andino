@@ -306,15 +306,17 @@ export default function Admin() {
 
 
               </div>
-
+           
             </form>
           </div>
+          
         </div>
+        
       </div>
+      
+      <DepositButton/>
+    
 
-      <DepositButton></DepositButton>
-
-      <CardsUser />
     </div>
 
 
