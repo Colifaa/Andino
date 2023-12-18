@@ -27,7 +27,7 @@ export default function Admin() {
   const [endDate, setEndDate] = useState('');
   const [eventNum, setEventNum] = useState('');
   const [eventDescription, setEventDescription] = useState('');
-
+  const [loadingQR, setLoadingQR] = useState(false);
   const [eventId, setEventId] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -98,6 +98,8 @@ export default function Admin() {
           return;
         }
 
+        setLoadingQR(true); // Establece el estado de carga a true antes de la generación del QR
+
         console.log('Antes de llamar a createPoap, imageUrl es:', imageUrl);
 
 
@@ -166,23 +168,19 @@ export default function Admin() {
 
         console.log('URL del evento:', generatedUrl);
         setUrl(generatedUrl);
-        setEventCreated(true); // Indicar que se ha creado un evento
-
+        setEventCreated(true);
       } else {
         console.error('Web3 no está disponible en este navegador');
       }
     } catch (error) {
       console.error('Error al crear el evento:', error);
+    } finally {
+      setLoadingQR(false); // Establece el estado de carga a false después de la generación del QR
     }
   };
 
-
   return (
-
-
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12">
-
-
       <div className="container max-w-5xl mx-auto px-4">
         <div className="w-4/5">
           <h1 className="mt-32 text-white text-6xl font-bold">
@@ -200,7 +198,6 @@ export default function Admin() {
         <div className="hidden sm:block opacity-50 z-0"></div>
         <div className="text-white relative">
           <h3 className="uppercase font-semibold">Eventos y Ocasiones</h3>
-          {/* Puedes agregar más contenido relacionado con la creación de POAPs aquí */}
         </div>
       </div>
 
@@ -263,7 +260,6 @@ export default function Admin() {
                     type="text"
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     placeholder="Cantidad de Poaps"
-
                     value={eventNum}
                     onChange={(e) => setEventNum(e.target.value)}
                   />
@@ -272,7 +268,6 @@ export default function Admin() {
                 <div className="flex flex-col">
                   <label className="leading-loose">Event Description</label>
                   <textarea
-
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     placeholder="Descripción del evento"
                     value={eventDescription}
@@ -290,36 +285,30 @@ export default function Admin() {
                 </div>
               </div>
 
-
               {eventCreated && <ImageLoad />} {/* Renderizar ImageLoad solo si se ha creado un evento */}
-
-
-
 
               <div className="pt-4 flex items-center space-x-4">
                 <button
                   className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
                   type="submit"
+                  disabled={loadingQR}
                 >
-                  Create
+                  {loadingQR ? (
+                    <div className="flex items-center space-x-2">
+                      <span>Creando...</span>
+                      <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                    </div>
+                  ) : (
+                    <span>Create</span>
+                  )}
                 </button>
-
-
               </div>
-           
             </form>
           </div>
-          
         </div>
-        
       </div>
-      
-      <DepositButton/>
-    
 
+      <DepositButton />
     </div>
-
-
   );
-
 }
