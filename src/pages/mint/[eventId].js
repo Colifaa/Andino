@@ -1,12 +1,15 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loading from '@/components/Loading';
 import Cards from '@/components/Cards';
 import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import Wallet from '@/components/wallet';
+import NavBarUser from '@/components/NavBarUser';
+import CardsUsersRecent from '@/components/CardsUsersRecent';
+import MetamaskPasos from '@/components/MetamaskPasos';
 
 export default function Mint() {
   const router = useRouter();
@@ -16,6 +19,26 @@ export default function Mint() {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    // Intentar obtener la dirección del usuario al cargar la página
+    const getUserAddress = async () => {
+      try {
+        if (window.ethereum) {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts && accounts.length > 0) {
+            setUserAddress(accounts[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error al obtener la dirección del usuario:', error);
+      }
+    };
+
+    getUserAddress();
+  }, []); // Ejecutar solo al montar el componente
+
+
 
   const handleConnectMetamask = async () => {
     try {
@@ -55,7 +78,7 @@ export default function Mint() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col items-center sm:py-12">
-      <NavBar />
+      <NavBarUser />
 
       {loading ? (
         <Loading />
@@ -63,7 +86,7 @@ export default function Mint() {
         <div className="flex-grow text-center space-y-8">
           <div>
             <h1 className="mt-16 text-white text-6xl font-bold">
-              ¡Bienvenido a NFT POAP Generator!
+              ¡Bienvenido a POAPs Generated!
             </h1>
           </div>
           <div>
@@ -76,7 +99,7 @@ export default function Mint() {
           <div className="flex flex-col gap-6 text-white text-lg md:text-xl lg:text-md">
             <p>
               {userAddress ? (
-                <span className="text-black px-4 py-2 rounded bg-emerald-400 hover:bg-emerald-300 text-lg md:text-xl lg:text-2xl">
+                <span className="font-bold bg-emerald-400 text-black px-4 py-2 rounded-full inline-block hover:bg-emerald-300 text-2xl">
                   Conexión establecida: {userAddress}
                 </span>
               ) : 'Conecta tu billetera MetaMask haciendo clic en el botón "Conectar MetaMask".'}
@@ -94,11 +117,21 @@ export default function Mint() {
                 <p>
                
                 </p>
-                <p>
+                <p className='font-bold'>
                   Haz clic en "Reclamar mi POAP" para recibir tu POAP único.
                 </p>
+
+                <p className='font-bold text-2xl'>
+                 Recuerda debes tener instalado MetaMask para proceder con el minteo.
+                 
+                </p>
+
+               
+          <p className='text-2xl'>Instala MetaMask desde aqui: <a className=" font-bold text-green-500" href="https://metamask.io/" target="_blank" rel="noopener noreferrer">https://metamask.io/</a></p>
+      
+
                 <button
-                  className="text-black px-4 py-2 rounded bg-emerald-400 hover:bg-emerald-300 text-lg md:text-xl lg:text-2xl"
+                  className="font-bold text-black px-4 py-2 rounded bg-emerald-400 hover:bg-emerald-300 text-lg md:text-xl lg:text-2xl"
                   onClick={handleMintMyPoap}
                 >
                   Reclamar mi POAP
@@ -128,12 +161,15 @@ export default function Mint() {
       )}
 
       <div className="text-white text-center mt-8">
-        <div className="bg-emerald-400 text-black px-4 py-2 rounded-full inline-block hover:bg-emerald-300">
-          <p className="font-bold">
-            ¡Explora tus POAPs minteados y disfruta de tus logros!
-          </p>
-        </div>
-        <Cards />
+        {userAddress && (
+          <div className="bg-emerald-400 text-black px-4 py-2 rounded-full inline-block hover:bg-emerald-300 text-2xl">
+            <p className="font-bold">
+              ¡Explora tus POAPs minteados recientemente!
+            </p>
+          </div>
+        )}
+        <CardsUsersRecent />
+        <MetamaskPasos/>
       </div>
     </div>
   );

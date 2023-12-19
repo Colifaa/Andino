@@ -8,7 +8,7 @@ import Wallet from '@/components/wallet'
 function admin() {
   return (
     <div>
-      
+      <NavBar/>
       <Admin/>
       <Footer/>
     </div>
