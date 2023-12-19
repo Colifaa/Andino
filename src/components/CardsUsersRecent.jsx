@@ -3,17 +3,16 @@ import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay,
 import Web3 from 'web3';
 import _ from 'lodash';
 
-const Cards = () => {
+const CardsUsersRecent = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
+
   const [poapIds, setPoapIds] = useState([]);
   const [poapData, setPoapData] = useState([]);
   const [jsonData, setJsonData] = useState([]);
-  console.log('poapData', poapData);
-  console.log('jsonData', jsonData);
-  console.log('poapData', poapData);
-  console.log('poapIds', poapIds);
+  const [selectedDrawerCard, setSelectedDrawerCard] = useState(null); // Nuevo estado para el contenido del Drawer
+
   useEffect(() => {
     const fetchUserAddress = async () => {
       if (window.ethereum) {
@@ -29,7 +28,7 @@ const Cards = () => {
 
           const response = await contract.methods.getPoapsByAccount(accounts[0]).call();
           const ids = response.map((tuple) => tuple[0].toString().replace('n', ''));
-          setPoapIds(ids);
+          setPoapIds(ids.slice(-3)); // Obtener solo los últimos 3 POAPs
         } catch (error) {
           console.error('Error al interactuar con el contrato:', error);
         }
@@ -42,10 +41,7 @@ const Cards = () => {
   const fetchPoapData = async () => {
     const web3 = new Web3(window.ethereum);
 
-    // Crear un objeto para almacenar los datos por ID
     const dataObject = {};
-
-    // Iterar sobre las IDs y obtener la URL para cada POAP
     const dataPromises = poapIds.map(async (id) => {
       try {
         const contractABI = JSON.parse(process.env.NEXT_PUBLIC_CONTRACT_ABI);
@@ -56,33 +52,34 @@ const Cards = () => {
         const response = await fetch(uri);
         const jsonData = await response.json();
 
-        // Almacenar los datos en el objeto usando la ID como clave
         dataObject[id] = _.cloneDeep(jsonData);
       } catch (error) {
         console.error(`Error al obtener datos para POAP con ID ${id}:`, error);
       }
     });
 
-    // Esperar a que todas las promesas se resuelvan
     await Promise.all(dataPromises);
-
-    // Actualizar el estado jsonData con el objeto completo
     setJsonData(dataObject);
   };
+
   useEffect(() => {
     if (poapIds.length > 0) {
       fetchPoapData();
     }
   }, [poapIds]);
 
-  const openCardDrawer = (card) => {
-    setSelectedCard(card);
-    setIsDrawerOpen(true);
-  };
-
   const closeDrawer = () => {
     setSelectedCard(null);
+    setSelectedDrawerCard(null);
     setIsDrawerOpen(false);
+  };
+  
+  // ...
+  
+  const openCardDrawer = (card) => {
+    setSelectedCard(card);
+    setSelectedDrawerCard(card);
+    setIsDrawerOpen(true);
   };
   const renderCardContent = (card, isDrawer = false) => (
     <>
@@ -102,7 +99,7 @@ const Cards = () => {
             <Image src={card.image} alt={card.title} objectFit="cover" rounded="full" borderRadius="full" boxSize="220px" />
           </Flex>
           <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{card.title}</h3>
-          <p className="text-xl font-bold text-red-500">{card.description}</p>
+          <p className="text-xl font-bold text-red-500">{card.name}</p>
           {card.attributes &&
             card.attributes.map((attribute, index) => (
               <p key={index} className="text-xl font-bold text-black">
@@ -116,7 +113,6 @@ const Cards = () => {
 
   return (
     <div className="container max-w-5xl mx-auto px-4">
-      {/* Mapa para mostrar tarjetas */}
       <div className="flex flex-wrap justify-center mx-auto">
         {Object.keys(jsonData).map((id) => {
           const card = jsonData[id];
@@ -130,28 +126,27 @@ const Cards = () => {
         })}
       </div>
 
-      {/* Chakra UI Drawer */}
       <Drawer isOpen={isDrawerOpen} placement="right" onClose={closeDrawer} size="md">
-        <DrawerOverlay>
-          <DrawerContent
-            bgSize="cover"
-            bgRepeat="no-repeat"
-            bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4="
-          >
-            <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange">
-              My Poap
-            </DrawerHeader>
-            <DrawerBody mt="10" size="md" color="blue" borderRadius="50px">
-              {selectedCard && renderCardContent(selectedCard, true)}
-              <Button mt={4} onClick={closeDrawer}>
-                Cerrar
-              </Button>
-            </DrawerBody>
-          </DrawerContent>
-        </DrawerOverlay>
-      </Drawer>
+  <DrawerOverlay>
+    <DrawerContent
+      bgSize="cover"
+      bgRepeat="no-repeat"
+      bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4="
+    >
+      <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange">
+        My Poap
+      </DrawerHeader>
+      <DrawerBody mt="10" size="md" color="blue" borderRadius="50px">
+        {selectedDrawerCard && renderCardContent(selectedDrawerCard, true)}
+        <Button mt={4} onClick={closeDrawer}>
+          Cerrar
+        </Button>
+      </DrawerBody>
+    </DrawerContent>
+  </DrawerOverlay>
+</Drawer>
     </div>
   );
 };
 
-export default Cards;
+export default CardsUsersRecent;
