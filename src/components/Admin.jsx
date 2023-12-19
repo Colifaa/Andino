@@ -7,11 +7,12 @@ import { useState } from "react";
 import Web3 from "web3";
 import Cards from "./Cards";
 import CardsUser from "./CardsUser";
-import NavBar from "./NavBar";
+import Wallet from "./wallet";
+
 
 // Contrato ABI
 // Imprime el contenido antes de parsear
-console.log("Contenido del ABI:", process.env.NEXT_PUBLIC_CONTRACT_ABI);
+
 
 const abi = JSON.parse(process.env.NEXT_PUBLIC_CONTRACT_ABI);
 
@@ -170,9 +171,11 @@ export default function Admin() {
   };
 
   return (
+  
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12">
+     
       <div className="container max-w-5xl mx-auto px-4">
-       
+ 
         <div className="w-4/5">
           <h1 className="mt-32 text-white text-6xl font-bold">
             La forma más rápida y segura de crear POAPs <br />
@@ -197,21 +200,28 @@ export default function Admin() {
         <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
           <div className="max-w-md mx-auto">
             <div className="flex items-center space-x-5">
-              <div className="h-14 w-14 bg-yellow-200 rounded-full flex flex-shrink-0 justify-center items-center text-yellow-500 text-2xl font-mono">
-                i
-              </div>
-              <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
-                <h2 className="leading-relaxed">Create an Event</h2>
-                <p className="text-sm text-gray-500 font-normal leading-relaxed">
-                  "POAP Odyssey: Donde las Ideas se Transforman en Asombrosos
-                  Poaps NFT"
-                </p>
-              </div>
+              
+            <div className="flex items-center space-x-5 justify-center">
+  <div className="h-20 w-20' bg-yellow-200 rounded-full flex-shrink-0 relative">
+    <img
+      src="https://i.ibb.co/5jtGkKZ/9ef73640-b5cb-4d8b-aa78-ac26ce045444.jpg"
+      alt="Imagen"
+      className="rounded-full object-cover h-full w-full"
+    />
+  </div>
+  <div className="block pl-2 font-semibold text-xl text-center text-gray-700">
+    <h2 className="leading-relaxed">Crea tu evento</h2>
+    <p className="text-sm text-gray-500 font-normal leading-relaxed">
+      "Odisea de Poaps: Donde las Ideas se Transforman en Asombrosos Poaps NFT"
+    </p>
+  </div>
+</div>
+
             </div>
             <form onSubmit={createEvent}>
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                 <div className="flex flex-col">
-                  <label className="leading-loose">Event Title</label>
+                  <label className="leading-loose">Nombre del evento</label>
                   <input
                     type="text"
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
@@ -222,7 +232,7 @@ export default function Admin() {
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex flex-col">
-                    <label className="leading-loose">Start</label>
+                    <label className="leading-loose">Comienza</label>
                     <div className="relative focus-within:text-gray-600 text-gray-400">
                       <input
                         type="date"
@@ -249,7 +259,7 @@ export default function Admin() {
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    <label className="leading-loose">End</label>
+                    <label className="leading-loose">Finaliza</label>
                     <div className="relative focus-within:text-gray-600 text-gray-400">
                       <input
                         type="date"
@@ -278,7 +288,7 @@ export default function Admin() {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="leading-loose">Quantity of Poaps</label>
+                  <label className="leading-loose">Cantidad de Poaps</label>
                   <input
                     type="text"
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
@@ -289,7 +299,7 @@ export default function Admin() {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="leading-loose">Event Description</label>
+                  <label className="leading-loose"> Descripción</label>
                   <textarea
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     placeholder="Descripción del evento"
@@ -299,7 +309,7 @@ export default function Admin() {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="leading-loose">Upload Image</label>
+                  <label className="leading-loose"> Imagen</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -321,7 +331,7 @@ export default function Admin() {
                       <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
                     </div>
                   ) : (
-                    <span>Create</span>
+                    <span>Crear Poap</span>
                   )}
                 </button>
               </div>
