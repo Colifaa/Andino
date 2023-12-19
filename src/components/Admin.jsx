@@ -1,65 +1,62 @@
 import QRCode from "qrcode.react";
 import ImageLoad from "../pages/imageLoad";
-import axios from 'axios';
+import axios from "axios";
 import DepositButton from "./DepositButton";
 
 import { useState } from "react";
 import Web3 from "web3";
 import Cards from "./Cards";
 import CardsUser from "./CardsUser";
-
-
+import NavBar from "./NavBar";
 
 // Contrato ABI
 // Imprime el contenido antes de parsear
-console.log('Contenido del ABI:', process.env.NEXT_PUBLIC_CONTRACT_ABI);
+console.log("Contenido del ABI:", process.env.NEXT_PUBLIC_CONTRACT_ABI);
 
 const abi = JSON.parse(process.env.NEXT_PUBLIC_CONTRACT_ABI);
 
 // Dirección del contrato
 const address = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
-
 export default function Admin() {
-  const [url, setUrl] = useState('');
-  const [eventName, seteventName] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [eventNum, setEventNum] = useState('');
-  const [eventDescription, setEventDescription] = useState('');
+  const [url, setUrl] = useState("");
+  const [eventName, seteventName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [eventNum, setEventNum] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
   const [loadingQR, setLoadingQR] = useState(false);
-  const [eventId, setEventId] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [eventId, setEventId] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [eventCreated, setEventCreated] = useState(false);
 
-
   const uploadFile = async (file) => {
     const data = new FormData();
-    data.append('file', file);
+    data.append("file", file);
 
-    const uploadUrl = 'https://api.pinata.cloud/pinning/pinFileToIPFS'; // Reemplaza con tu URL de carga a Pinata
+    const uploadUrl = "https://api.pinata.cloud/pinning/pinFileToIPFS"; // Reemplaza con tu URL de carga a Pinata
 
     const headers = {
-      'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-      'pinata_api_key': process.env.NEXT_PUBLIC_PINATA_API_KEY,
-      'pinata_secret_api_key': process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY,
+      "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+      pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY,
+      pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY,
     };
 
     try {
       const response = await axios.post(uploadUrl, data, { headers });
       const newCid = response.data.IpfsHash;
-      const ipfsGateway = 'https://ipfs.io/ipfs/';
+      const ipfsGateway = "https://ipfs.io/ipfs/";
       const newImageUrl = ipfsGateway + newCid;
 
-      console.log('File uploaded successfully. CID:', newCid);
-      console.log('IPFS URL:', newImageUrl);
+      console.log("File uploaded successfully. CID:", newCid);
+      console.log("IPFS URL:", newImageUrl);
 
       setImageUrl(newImageUrl);
 
       return { cid: newCid, url: newImageUrl };
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error("Error uploading file:", error);
       return { error };
     }
   };
@@ -76,35 +73,35 @@ export default function Admin() {
     const currentDateInSeconds = Math.floor(currentDate.getTime() / 1000);
 
     if (!imageFile) {
-      console.error('Debes subir una imagen antes de crear el evento.');
+      console.error("Debes subir una imagen antes de crear el evento.");
       return;
     }
 
     try {
       const { url: imageUrl } = await uploadFile(imageFile);
 
-      if (typeof window.ethereum !== 'undefined') {
+      if (typeof window.ethereum !== "undefined") {
         const web3 = new Web3(window.ethereum);
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        await window.ethereum.request({ method: "eth_requestAccounts" });
 
         const accounts = await web3.eth.getAccounts();
         const contract = new web3.eth.Contract(abi, address); // Reemplaza con tu dirección de contrato
-        
-        const startDateInSeconds = Math.floor(new Date(startDate).getTime() / 1000);
-        const expirationDateInSeconds = Math.floor(new Date(endDate).getTime() / 1000);
+
+        const startDateInSeconds = Math.floor(
+          new Date(startDate).getTime() / 1000
+        );
+        const expirationDateInSeconds = Math.floor(
+          new Date(endDate).getTime() / 1000
+        );
 
         if (expirationDateInSeconds < startDateInSeconds) {
-          console.error('La fecha de finalización debe ser en el futuro');
+          console.error("La fecha de finalización debe ser en el futuro");
           return;
         }
 
         setLoadingQR(true); // Establece el estado de carga a true antes de la generación del QR
 
-        console.log('Antes de llamar a createPoap, imageUrl es:', imageUrl);
-
-
-        
-
+        console.log("Antes de llamar a createPoap, imageUrl es:", imageUrl);
 
         const metadata = {
           name: eventName,
@@ -112,68 +109,61 @@ export default function Admin() {
           image: imageUrl,
           attributes: [
             {
-              trait_type: 'Fecha de inicio',
+              trait_type: "Fecha de inicio",
               value: startDate,
             },
             {
-              trait_type: 'Fecha de finalización',
+              trait_type: "Fecha de finalización",
               value: endDate,
             },
             {
-              trait_type: 'Poaps Creados',
+              trait_type: "Poaps Creados",
               value: eventNum,
             },
-
           ],
         };
 
-
-
         const uploadMetadata = async () => {
           try {
-            const { url: metadataUrl } = await uploadFile(new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-            console.log('Metadata uploaded successfully. URL:', metadataUrl);
+            const { url: metadataUrl } = await uploadFile(
+              new Blob([JSON.stringify(metadata)], { type: "application/json" })
+            );
+            console.log("Metadata uploaded successfully. URL:", metadataUrl);
             return metadataUrl;
           } catch (error) {
-            console.error('Error uploading metadata:', error);
+            console.error("Error uploading metadata:", error);
             return { error };
           }
         };
 
-
-
-
-
-
         const metadataJSON = JSON.stringify(metadata);
 
-
-
         const metadataUrl = await uploadMetadata();
-    
 
-        const result = await contract.methods.createPoap(
-          eventName,
-          startDateInSeconds,
-          expirationDateInSeconds, 
-          eventDescription,
-          eventNum,
-          metadataUrl // Agrega la URL de la metadata aquí
-        ).send({ from: accounts[0] });
+        const result = await contract.methods
+          .createPoap(
+            eventName,
+            startDateInSeconds,
+            expirationDateInSeconds,
+            eventDescription,
+            eventNum,
+            metadataUrl // Agrega la URL de la metadata aquí
+          )
+          .send({ from: accounts[0] });
 
-        console.log('Evento creado:', result);
+        console.log("Evento creado:", result);
 
         const CID = result.cid;
         const generatedUrl = `https://ipfs.io/ipfs/${CID}`;
 
-        console.log('URL del evento:', generatedUrl);
+        console.log("URL del evento:", generatedUrl);
         setUrl(generatedUrl);
         setEventCreated(true);
       } else {
-        console.error('Web3 no está disponible en este navegador');
+        console.error("Web3 no está disponible en este navegador");
       }
     } catch (error) {
-      console.error('Error al crear el evento:', error);
+      console.error("Error al crear el evento:", error);
     } finally {
       setLoadingQR(false); // Establece el estado de carga a false después de la generación del QR
     }
@@ -182,9 +172,10 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-green-600 py-6 flex flex-col justify-center sm:py-12">
       <div className="container max-w-5xl mx-auto px-4">
+       
         <div className="w-4/5">
           <h1 className="mt-32 text-white text-6xl font-bold">
-            La forma más rápida y segura de crear  POAPs <br />
+            La forma más rápida y segura de crear POAPs <br />
             <span className="text-blue-400">para tus eventos.</span>
           </h1>
         </div>
@@ -192,7 +183,8 @@ export default function Admin() {
           <h3 className="text-gray-300">
             Diseña, edita y distribuye POAPs únicos para <br />
             <strong className="text-white">cualquier tipo de evento</strong>
-            <br />con instalaciones de paquetes rápidas y seguridad garantizada.
+            <br />
+            con instalaciones de paquetes rápidas y seguridad garantizada.
           </h3>
         </div>
         <div className="hidden sm:block opacity-50 z-0"></div>
@@ -205,10 +197,15 @@ export default function Admin() {
         <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
           <div className="max-w-md mx-auto">
             <div className="flex items-center space-x-5">
-              <div className="h-14 w-14 bg-yellow-200 rounded-full flex flex-shrink-0 justify-center items-center text-yellow-500 text-2xl font-mono">i</div>
+              <div className="h-14 w-14 bg-yellow-200 rounded-full flex flex-shrink-0 justify-center items-center text-yellow-500 text-2xl font-mono">
+                i
+              </div>
               <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
                 <h2 className="leading-relaxed">Create an Event</h2>
-                <p className="text-sm text-gray-500 font-normal leading-relaxed">"POAP Odyssey: Donde las Ideas se Transforman en Asombrosos Poaps NFT"</p>
+                <p className="text-sm text-gray-500 font-normal leading-relaxed">
+                  "POAP Odyssey: Donde las Ideas se Transforman en Asombrosos
+                  Poaps NFT"
+                </p>
               </div>
             </div>
             <form onSubmit={createEvent}>
@@ -234,7 +231,20 @@ export default function Admin() {
                         onChange={(e) => setStartDate(e.target.value)}
                       />
                       <div className="absolute left-3 top-2">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          ></path>
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -248,7 +258,20 @@ export default function Admin() {
                         onChange={(e) => setEndDate(e.target.value)}
                       />
                       <div className="absolute left-3 top-2">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          ></path>
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -284,9 +307,8 @@ export default function Admin() {
                   />
                 </div>
               </div>
-
-              {eventCreated && <ImageLoad />} {/* Renderizar ImageLoad solo si se ha creado un evento */}
-
+              {eventCreated && <ImageLoad />}{" "}
+              {/* Renderizar ImageLoad solo si se ha creado un evento */}
               <div className="pt-4 flex items-center space-x-4">
                 <button
                   className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
