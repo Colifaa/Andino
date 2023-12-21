@@ -1,6 +1,19 @@
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Spinner, Text, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
 const Loading = () => {
+  const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    // Simulando un tiempo de carga, puedes ajustar esto según tus necesidades
+    const loadingTime = setTimeout(() => {
+      setShowAlert(true);
+    }, 5000);
+
+    // Limpiando el temporizador al desmontar el componente
+    return () => clearTimeout(loadingTime);
+  }, []); // El segundo argumento vacío asegura que este efecto se ejecute solo después del montaje inicial
+
   return (
     <Box
       position="fixed"
@@ -19,6 +32,17 @@ const Loading = () => {
         <Text mt={4} fontSize="2xl" color="amber.950" fontWeight="bold">
           LOADING...
         </Text>
+        {showAlert && (
+          <Alert status="success" mt={4} variant="subtle" flexDirection="column" alignItems="center" justifyContent="center">
+            <AlertIcon boxSize="40px" mr={0} />
+            <AlertTitle mt={4} mb={1} fontSize="lg">
+              POAP RECLAMADO CORRECTAMENTE
+            </AlertTitle>
+            <AlertDescription maxWidth="sm">
+              Refresca la página para ver los efectos.
+            </AlertDescription>
+          </Alert>
+        )}
       </Box>
     </Box>
   );
