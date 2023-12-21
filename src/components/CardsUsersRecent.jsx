@@ -138,6 +138,10 @@ const CardsUsersRecent = () => {
       </DrawerHeader>
       <DrawerBody mt="10" size="md" color="blue" borderRadius="50px">
         {selectedDrawerCard && renderCardContent(selectedDrawerCard, true)}
+        <div className="mt-8 bg-green-700 text-BLACK p-4 rounded-md mb-4">
+    <p className="text-2xl font-semibold">¡FELICIDADES POR HABER CULMINADO CON EL EVENTO!</p>
+    <p className="text-lg">Esperamos que disfrutes tu Poap. ¡Gracias por participar!</p>
+  </div>
         <Button mt={4} onClick={closeDrawer}>
           Cerrar
         </Button>

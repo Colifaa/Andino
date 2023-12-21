@@ -93,7 +93,7 @@ const Cards = () => {
           <Flex mt="10" align="center" justify="center">
             <Image src={card.image} alt={card.title} objectFit="cover" rounded="full" borderRadius="full" boxSize="220px" />
           </Flex>
-          <p className="text-4xl font-bold text-red-500">Descripcion: {card.description}</p>
+          <p className="text-4xl font-bold text-red-500">{card.description}</p>
         </div>
       ) : (
         // Contenido para la tarjeta
@@ -142,11 +142,15 @@ const Cards = () => {
               My Poap
             </DrawerHeader>
             <DrawerBody mt="10" size="md" color="blue" borderRadius="50px">
-              {selectedCard && renderCardContent(selectedCard, true)}
-              <Button mt={4} onClick={closeDrawer}>
-                Cerrar
-              </Button>
-            </DrawerBody>
+  {selectedCard && renderCardContent(selectedCard, true)}
+  <div className="mt-8 bg-green-700 text-BLACK p-4 rounded-md mb-4">
+    <p className="text-2xl font-semibold">¡FELICIDADES POR HABER CULMINADO CON EL EVENTO!</p>
+    <p className="text-lg">Esperamos que disfrutes tu Poap. ¡Gracias por participar!</p>
+  </div>
+  <Button mt={4} onClick={closeDrawer}>
+    Cerrar
+  </Button>
+</DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
       </Drawer>
