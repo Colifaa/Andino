@@ -6,7 +6,7 @@ const NavBarUser = () => {
     <Box bg="white" boxShadow="md">
       <nav className="fixed inset-x-0 top-0 z-10 w-full px-4 py-1 bg-[#YourPOAPColor] shadow-md border-[#YourBorderColor] dark:bg-[#YourDarkColor] transition duration-700 ease-out">
         <Flex justify="space-between" align="center" p={4}>
-          <Link href="/mint/1">
+          <Link href="/">
             <Box width="8rem" height="auto">
               <Image
                 src="https://th.bing.com/th/id/OIG.TXoN1fY_SxiGAMzB2QF.?pid=ImgGn"
