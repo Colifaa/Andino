@@ -86,11 +86,15 @@ const CardsUsersRecent = () => {
       {isDrawer ? (
         // Contenido específico para el Drawer
         <div>
-          <p className="text-4xl font-bold text-green-500">Evento: {card.name}</p>
+           <Flex  align="center" justify="center">
+          <p className="text-4xl font-bold text-green-700">Evento: {card.name}</p>
+          </Flex>
           <Flex mt="10" align="center" justify="center">
             <Image src={card.image} alt={card.title} objectFit="cover" rounded="full" borderRadius="full" boxSize="220px" />
           </Flex>
-          <p className="text-4xl font-bold text-red-500">Descripcion: {card.description}</p>
+          <Flex mt="10" align="center" justify="center">
+          <p className="text-4xl font-bold text-red-900"> {card.description}</p>
+          </Flex>
         </div>
       ) : (
         // Contenido para la tarjeta
@@ -138,10 +142,11 @@ const CardsUsersRecent = () => {
       </DrawerHeader>
       <DrawerBody mt="10" size="md" color="blue" borderRadius="50px">
         {selectedDrawerCard && renderCardContent(selectedDrawerCard, true)}
-        <div className="mt-8 bg-green-700 text-BLACK p-4 rounded-md mb-4">
-    <p className="text-2xl font-semibold">¡FELICIDADES POR HABER CULMINADO CON EL EVENTO!</p>
-    <p className="text-lg">Esperamos que disfrutes tu Poap. ¡Gracias por participar!</p>
-  </div>
+        <div className="mt-8 mb-4 text-blue relative text-center bg-emerald-400 text-black inline-block hover:bg-emerald-300 rounded-md">
+         
+         <p className="text-2xl font-semibold">¡FELICIDADES POR HABER CULMINADO CON EL EVENTO!</p>
+         <p className="text-lg">Esperamos que disfrutes tu Poap. ¡Gracias por participar!</p>
+       </div>
         <Button mt={4} onClick={closeDrawer}>
           Cerrar
         </Button>
