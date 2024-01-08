@@ -86,7 +86,7 @@ export default function Mint() {
         <div className="flex-grow text-center space-y-8">
           <div>
             <h1 className="mt-16 text-white text-6xl font-bold">
-              ¡Bienvenido a POAPs Generated!
+              ¡Bienvenido a POAPs Generator!
             </h1>
           </div>
           <div>

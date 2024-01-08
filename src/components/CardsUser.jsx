@@ -152,9 +152,12 @@ const CardsUser = () => {
       bgImage="https://media.istockphoto.com/id/1135953192/es/foto/bosque-en-una-cresta-de-monta%C3%B1a-cubierta-de-nieve-v%C3%ADa-l%C3%A1ctea-en-un-cielo-estrellado-noche-de.jpg?s=2048x2048&w=is&k=20&c=N5ts0vAVPWN3krWvLNWtdCg7hkxHvuqCJHJQSAN6jr4="
     >
       <DrawerHeader borderBottomWidth="1px" borderBottomColor="orange" color="orange">
-        Detalles de la tarjeta
+        My Poap
       </DrawerHeader>
       <DrawerBody mt="10" size="md" borderRadius="50px">
+      <Flex align="center" justify="center">
+      <h3 className="text-4xl font-bold mb-2 text-green-700 font-serif mt-8 mb-4"> Evento: {selectedCard?.name}</h3>
+      </Flex>
         <Flex align="center" justify="center">
           <Image
             src={selectedCard?.image}
@@ -165,12 +168,20 @@ const CardsUser = () => {
             boxSize="220px"
           />
         </Flex>
-        <h3 className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.name}</h3>
-        <p className="text-4xl font-bold mb-2 text-gray-800 font-serif">{selectedCard?.description}</p>
+        <Flex  align="center" justify="center">
+        <p className="text-4xl font-bold mb-2 text-red-900 font-serif mt-8 mb-4">{selectedCard?.description}</p>
+        </Flex>
+
+        <div className="mt-8 mb-4 text-blue relative text-center bg-emerald-400 text-black inline-block hover:bg-emerald-300 rounded-md ">
+         
+         <p className="text-2xl font-semibold">¡FELICIDADES POR HABER CREADO UN NUEVO EVENTO!</p>
+         <p className="text-lg">Esperamos que disfrutes tu Poap. ¡Gracias por participar!</p>
+       </div>
 
         <Button mt={4} onClick={closeDrawer}>
           Cerrar
         </Button>
+        
       </DrawerBody>
     </DrawerContent>
   </DrawerOverlay>
